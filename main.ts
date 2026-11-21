@@ -1,8 +1,8 @@
-// SOLANO HEAT — make.fun gta6-01 entry program (round 9).
+// SOLANO HEAT — make.fun gta6-01 entry program (round 10).
 // Copies game/ and screenshots/ into the output directory and writes
 // /output/dossier.json with buildDossier from vendor/makefun-game.ts.
 // Standard library only; runs on Node 22 with no install and no network.
-import { cpSync, mkdirSync, writeFileSync, readdirSync, statSync, chmodSync } from 'node:fs';
+import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { buildDossier } from './vendor/makefun-game.ts';
@@ -23,18 +23,4 @@ const dossier = buildDossier(outDir, {
 });
 writeFileSync(join(outDir, 'dossier.json'), dossier);
 
-// The grader collects /output as another user: leave every output readable.
-function chmodTree(dir, fileMode, dirMode) {
-  for (const name of readdirSync(dir)) {
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) {
-      chmodSync(p, dirMode);
-      chmodTree(p, fileMode, dirMode);
-    } else {
-      chmodSync(p, fileMode);
-    }
-  }
-}
-chmodSync(outDir, 0o755);
-chmodTree(outDir, 0o644, 0o755);
 console.log(`SOLANO HEAT: wrote ${outDir} (dossier ${dossier.length} bytes)`);
